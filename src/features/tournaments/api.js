@@ -18,6 +18,6 @@ export async function updateDraftTournament(values) {
 }
 
 export async function transitionTournament(id, nextState, reason = null) {
-  const { error } = await supabase.rpc('admin_transition_tournament', { p_tournament_id: id, p_new_state: nextState, p_reason: reason })
+  const { error } = await supabase.rpc('admin_transition_tournament_optional', { p_tournament_id: id, p_new_state: nextState, p_reason: reason })
   if (error) throw error
 }

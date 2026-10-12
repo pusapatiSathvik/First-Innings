@@ -11,6 +11,16 @@ export async function publishFixtures(tournamentId) {
   if (error) throw error
 }
 
+export async function swapOpeningRoundTeams(matchOneId, teamOneId, matchTwoId, teamTwoId) {
+  const { error } = await supabase.rpc('admin_swap_bracket_participants', {
+    p_match_one_id: matchOneId,
+    p_team_one_id: teamOneId,
+    p_match_two_id: matchTwoId,
+    p_team_two_id: teamTwoId,
+  })
+  if (error) throw error
+}
+
 export async function listMatchOfficials() {
   const { data, error } = await supabase.rpc('admin_list_match_officials')
   if (error) throw error
@@ -22,8 +32,8 @@ export async function assignMatchOfficial(matchId, userId) {
   if (error) throw error
 }
 
-export async function saveMatchSchedule(matchId, scheduledFor, venue, rescheduleReason = null) {
-  const rpc = rescheduleReason ? 'admin_reschedule_match' : 'admin_schedule_match'
+export async function saveMatchSchedule(matchId, scheduledFor, venue, rescheduleReason = null, isReschedule = false) {
+  const rpc = isReschedule ? 'admin_reschedule_match_optional' : 'admin_schedule_match'
   const args = { p_match_id: matchId, p_scheduled_for: scheduledFor, p_venue: venue }
   if (rescheduleReason) args.p_reason = rescheduleReason
   const { error } = await supabase.rpc(rpc, args)
@@ -31,14 +41,36 @@ export async function saveMatchSchedule(matchId, scheduledFor, venue, reschedule
 }
 
 export async function changeMatchStatus(matchId, action, reason) {
-  const rpc = action === 'cancel' ? 'admin_cancel_match' : 'admin_mark_match_abandoned'
+  const rpc = action === 'cancel' ? 'admin_cancel_match_optional' : 'admin_mark_match_abandoned_optional'
   const { error } = await supabase.rpc(rpc, { p_match_id: matchId, p_reason: reason })
   if (error) throw error
 }
 
 export async function finalizeAdministrativeResult(matchId, winnerId, reason) {
-  const { error } = await supabase.rpc('admin_finalize_match', { p_match_id: matchId, p_winner_team_id: winnerId, p_reason: reason })
+  const { error } = await supabase.rpc('admin_finalize_match_optional', { p_match_id: matchId, p_winner_team_id: winnerId, p_reason: reason })
   if (error) throw error
+}
+
+export async function finalizeUmpireResult(matchId, winnerId, reason) {
+  const { error } = await supabase.rpc('umpire_finalize_assigned_match', { p_match_id: matchId, p_winner_team_id: winnerId, p_reason: reason })
+  if (error) throw error
+}
+
+export async function joinMatchAsUmpire(matchId) {
+  const { error } = await supabase.rpc('admin_join_match_as_official', { p_match_id: matchId })
+  if (error) throw error
+}
+
+export async function listMyUmpireMatches() {
+  const { data, error } = await supabase.rpc('admin_list_my_umpire_matches')
+  if (error) throw error
+  return data || []
+}
+
+export async function listOpenUmpireMatches() {
+  const { data, error } = await supabase.rpc('admin_list_open_umpire_matches')
+  if (error) throw error
+  return data || []
 }
 
 export async function listPublicBracket(slug) {
