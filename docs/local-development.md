@@ -7,7 +7,7 @@
 5. In Supabase Auth settings, enable email/password. Choose whether sign-up requires email confirmation. For confirmation, configure a working email provider and add the local app URL to the Auth redirect allow list. Add `/reset-password` as an allowed redirect path.
 6. Run `npm run dev`.
 
-To apply migrations to your hosted project, link it with `npx supabase link --project-ref YOUR_PROJECT_REF`, then run `npx supabase db push`. Review the CLI's migration list before confirming. The local `supabase/config.toml` does not contain hosted project credentials.
+To apply migrations to your hosted project, link it with `npx supabase link --project-ref YOUR_PROJECT_REF`, then run `npx supabase migration list` to review pending changes and `npx supabase db push` to apply them. Stage 3 adds `202610120003_fixtures_and_officials.sql` and `202610120004_admin_match_officials.sql`; they do not seed production data. Run the local pgTAP suite with `npx supabase test db` after Docker Desktop is running. The local `supabase/config.toml` does not contain hosted project credentials.
 
 The app uses Supabase Auth's persisted browser session and refreshes auth state on load. If email confirmation is enabled, registration displays a check-your-inbox message when Supabase does not return a session. Password reset sends the user to `/reset-password`.
 

@@ -8,7 +8,9 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { TournamentsPage } from './pages/TournamentsPage'
 import { TeamsPage } from './pages/TeamsPage'
 import { AdminPage } from './pages/AdminPage'
+import { AdminTournamentsPage } from './pages/AdminTournamentsPage'
 import { AdminGate } from './components/AdminGate'
+import { PublicBracketPage } from './pages/PublicBracketPage'
 
 export function App() {
   return <BrowserRouter><AuthProvider><Routes>
@@ -18,9 +20,11 @@ export function App() {
     <Route path="/forgot-password" element={<AuthPage mode="reset"/>}/>
     <Route path="/reset-password" element={<ResetPasswordPage/>}/>
     <Route path="/tournaments" element={<TournamentsPage/>}/>
+    <Route path="/tournaments/:slug/fixtures" element={<PublicBracketPage/>}/>
     <Route element={<ProtectedRoute/>}><Route path="/dashboard" element={<DashboardPage/>}/></Route>
     <Route element={<ProtectedRoute/>}><Route path="/teams" element={<TeamsPage/>}/></Route>
-    <Route element={<ProtectedRoute/>}><Route path="/admin" element={<AdminGate><AdminPage/></AdminGate>}/></Route>
+    <Route element={<ProtectedRoute/>}><Route path="/admin" element={<AdminGate><AdminTournamentsPage/></AdminGate>}/></Route>
+    <Route element={<ProtectedRoute/>}><Route path="/admin/tournaments/:tournamentId" element={<AdminGate><AdminPage/></AdminGate>}/></Route>
     <Route path="*" element={<Navigate to="/" replace/>}/>
   </Routes></AuthProvider></BrowserRouter>
 }

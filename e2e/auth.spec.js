@@ -17,7 +17,19 @@ test('protected dashboard redirects signed-out visitors to login', async ({ page
   await expect(page.getByLabel('Email address')).toBeVisible()
 })
 
+test('admin tournament pages require a signed-in account', async ({ page }) => {
+  await page.goto('/admin')
+  await expect(page).toHaveURL(/\/login$/)
+  await page.goto('/admin/tournaments/example-id')
+  await expect(page).toHaveURL(/\/login$/)
+})
+
 test('public tournament listing route is reachable', async ({ page }) => {
   await page.goto('/tournaments')
   await expect(page.getByRole('heading', { name: 'Tournaments', exact: true })).toBeVisible()
+})
+
+test('public bracket route is reachable', async ({ page }) => {
+  await page.goto('/tournaments/sample-knockout/fixtures')
+  await expect(page.getByRole('heading', { name: 'Tournament bracket', exact: true })).toBeVisible()
 })
